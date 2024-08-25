@@ -1,9 +1,28 @@
 @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
-  
-  body {
+
+body {
+    font-family: Arial, sans-serif;
     background-color: #1b1b1b;
     color: #ffffff;
   }
+
+h1 {
+    font-size: 2em;
+}
+
+p {
+    font-size: 1em;
+}
+
+a, a:visited {
+    color: #ffffff;
+    border-bottom: 1px dashed teal;
+    text-decoration: none;
+}
+
+a:hover {
+    color: teal;
+}
 
 .row {
     display: flex;
