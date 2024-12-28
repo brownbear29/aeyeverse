@@ -1,0 +1,16 @@
+{
+  "name": "#31 Eye God",
+  "description": "However, not even the Royals knew there were beings beyond their comprehension that could not only rival, but surely defeat, the King's wits and intellect, for these creatures that lurked in the deep nothingness had an understanding of deeper things that no other being could even conceive.\\n\\nIt was one of these creatures, an Eye God, who brought the Demon into existence.\\n\\n[Paradox Gates II - The Eye God](https://eyeverse.world/paradox-gates)",
+  "image": "https://aeyeverse.brownbear29.xyz/images/31.png",
+  "attributes": [
+    {
+      "value": "Season",
+      "trait_type": "Paradox Gates"
+    },
+    {
+      "value": "Gate",
+      "trait_type": "II"
+    }
+  ],
+  "compiler": "brownbear29"
+}

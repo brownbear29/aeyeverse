@@ -1,0 +1,16 @@
+{
+  "name": "#44 Sacred Lake",
+  "description": "It was then, as they recounted the strange tales the Watchers had told, that the wise King understood. The fish held the souls of those fallen, and those who fed on them had become poisoned by the memories of the dead. And so, the lake was claimed for the Kingdom, and it was declared sacred - a place many would later walk to in silent pilgrimage, to pay tribute to those who came before, never daring approach its waters.\\n\\n[Paradox Gates IV - Blessed Shoal](https://eyeverse.world/paradox-gates)",
+  "image": "https://aeyeverse.brownbear29.xyz/images/44.png",
+  "attributes": [
+    {
+      "value": "Season",
+      "trait_type": "Paradox Gates"
+    },
+    {
+      "value": "Gate",
+      "trait_type": "IV"
+    }
+  ],
+  "compiler": "brownbear29"
+}

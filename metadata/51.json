@@ -1,0 +1,16 @@
+{
+  "name": "#51 Ghost of an Island",
+  "description": "It was unlike anything they had seen before - a small, very small island, but with great buildings, towering in height, everything bright and blue, as though every structure they could make out gave off its own kind of light.\\n\\nAs much as they advanced, the island seemed to always grow further away from them, never quite getting close enough to be reached. And then came an arrow lit with fire from the far off land.\\n\\n[Paradox Gates VI - Ghost of an Island](https://eyeverse.world/paradox-gates)",
+  "image": "https://aeyeverse.brownbear29.xyz/images/51.png",
+  "attributes": [
+    {
+      "value": "Season",
+      "trait_type": "Paradox Gates"
+    },
+    {
+      "value": "Gate",
+      "trait_type": "VI"
+    }
+  ],
+  "compiler": "brownbear29"
+}

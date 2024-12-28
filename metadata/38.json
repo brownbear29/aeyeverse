@@ -1,0 +1,16 @@
+{
+  "name": "#38 The Curious Last Sights II",
+  "description": "A great battle, ending in a burst of light.\\n\\n[Paradox Gates III - The Last Sights](https://eyeverse.world/paradox-gates)",
+  "image": "https://aeyeverse.brownbear29.xyz/images/38.png",
+  "attributes": [
+    {
+      "value": "Season",
+      "trait_type": "Paradox Gates"
+    },
+    {
+      "value": "Gate",
+      "trait_type": "III"
+    }
+  ],
+  "compiler": "brownbear29"
+}

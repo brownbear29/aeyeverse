@@ -1,0 +1,16 @@
+{
+  "name": "#47 Eye Lords",
+  "description": "The Eye Lords became a part of the court, the royal advisors who would counsel the King and Queen on all matters regarding the wellbeing of the kingdom, the most trusted confidants of the crown.\\n\\n[Season 1, Chapter 4 - The King and the Roundtable of Lords](https://eyeverse.world/chapter-4)",
+  "image": "https://aeyeverse.brownbear29.xyz/images/47.png",
+  "attributes": [
+    {
+      "value": "Season",
+      "trait_type": "1"
+    },
+    {
+      "value": "Chapter",
+      "trait_type": "4"
+    }
+  ],
+  "compiler": "brownbear29"
+}

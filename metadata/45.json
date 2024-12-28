@@ -1,0 +1,16 @@
+{
+  "name": "#45 Cult of the Eagles",
+  "description": "By the time the army awoke, all the Watched were gone. Bewildered by this, they decided to search for them, but did not find anything until that night. As they marched on, they saw what at first they thought to be a pack of large birds in the sky. However, many believed these creatures, too big to be any kind of bird they knew, to be a flock of Watched, now bearing wings.\\n\\n[Paradox Gates V - Cult of the Eagles](https://eyeverse.world/paradox-gates)",
+  "image": "https://aeyeverse.brownbear29.xyz/images/45.png",
+  "attributes": [
+    {
+      "value": "Season",
+      "trait_type": "Paradox Gates"
+    },
+    {
+      "value": "Gate",
+      "trait_type": "V"
+    }
+  ],
+  "compiler": "brownbear29"
+}

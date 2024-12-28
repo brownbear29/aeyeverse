@@ -1,0 +1,16 @@
+{
+  "name": "#77 BearEye the Fable",
+  "description": "A half breed - an inarticulate cross between an Eye Kin and an unknown being, not found commonly in the Land of Black and White - stood on a small pedestal, with his short 5ft stature holding up a large head that seemed unfit on its body, and dressed in oversized Eye Kin wear.\\n\\n[Season 2, Chapter 6 - Turmoil](https://eyeverse.world/s2-ch6)",
+  "image": "https://aeyeverse.brownbear29.xyz/images/77.png",
+  "attributes": [
+    {
+      "value": "Season",
+      "trait_type": "2"
+    },
+    {
+      "value": "Chapter",
+      "trait_type": "6"
+    }
+  ],
+  "compiler": "brownbear29"
+}

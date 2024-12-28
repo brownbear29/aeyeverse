@@ -1,0 +1,16 @@
+{
+  "name": "#64 The Fallen Prince",
+  "description": "As the dust cleared from the fall of the Golem King's corpse, a figure walked out towards the Prince and his Lords. The Lords bowed respectfully as the King of Black and White walked towards his son. Another light landed gracefully next to the King, and the Clairevoyant Queen walked alongside her King to their child.\\n\\n[Season 1, Chapter 8 - The King of Golemia](https://eyeverse.world/chapter-8)",
+  "image": "https://aeyeverse.brownbear29.xyz/images/64.png",
+  "attributes": [
+    {
+      "value": "Season",
+      "trait_type": "1"
+    },
+    {
+      "value": "Chapter",
+      "trait_type": "8"
+    }
+  ],
+  "compiler": "brownbear29"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "#39 The Curious Last Sights III",
+  "description": "An army raising from deep waters.\\n\\n[Paradox Gates III - The Last Sights](https://eyeverse.world/paradox-gates)",
+  "image": "https://aeyeverse.brownbear29.xyz/images/39.png",
+  "attributes": [
+    {
+      "value": "Season",
+      "trait_type": "Paradox Gates"
+    },
+    {
+      "value": "Gate",
+      "trait_type": "III"
+    }
+  ],
+  "compiler": "brownbear29"
+}

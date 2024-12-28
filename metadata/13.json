@@ -1,0 +1,16 @@
+{
+  "name": "#13 The Curse of the Watched",
+  "description": "The first Watched to be branded was alone in the forest, and so the truth of its metamorphosis is surrounded by myths, speculations and whispers about what really happened. As though maybe this Watched was responsible for what came next. As though maybe something it did or saw brought about the dark age that would fall upon the Watched.\\n\\nIt was night, and its screams echoed between the trees as the mark burned across its face. From its wrists vines grew, coming to bind its hands, so tightly it could no longer move them.\\n\\n[Season 1, Chapter 2 - The Curse of the Watched](https://eyeverse.world/chapter2)",
+  "image": "https://aeyeverse.brownbear29.xyz/images/13.png",
+  "attributes": [
+    {
+      "value": "Season",
+      "trait_type": "1"
+    },
+    {
+      "value": "Chapter",
+      "trait_type": "2"
+    }
+  ],
+  "compiler": "brownbear29"
+}

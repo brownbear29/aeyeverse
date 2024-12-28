@@ -1,0 +1,16 @@
+{
+  "name": "#43 The Curious Last Sights VII",
+  "description": "An impossibly strange creature living in the blackest dark ever known.\\n\\n[Paradox Gates III - The Last Sights](https://eyeverse.world/paradox-gates)",
+  "image": "https://aeyeverse.brownbear29.xyz/images/43.png",
+  "attributes": [
+    {
+      "value": "Season",
+      "trait_type": "Paradox Gates"
+    },
+    {
+      "value": "Gate",
+      "trait_type": "III"
+    }
+  ],
+  "compiler": "brownbear29"
+}

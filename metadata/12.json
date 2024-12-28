@@ -1,0 +1,17 @@
+{
+  "name": "#12 The First Watched",
+  "description": "Today it is known as the first creature in this universe, the first Watched to be birthed by the disorderly cosmos where many other creatures now walk. But back then, it did not have these words - any words at all, nor did it have a voice with which to utter them.\\n\\n[Season 1, Chapter 1 - The Dark: Where it all begins](https://eyeverse.world/chapter1)",
+  "image": "https://aeyeverse.brownbear29.xyz/images/12.png",
+  "attributes": [
+    {
+      "value": "Season",
+      "trait_type": "1"
+    },
+    {
+      "value": "Chapter",
+      "trait_type": "1"
+    }
+  ],
+  "external_url": "https://aeyeverse.brownbear29.xyz",
+  "compiler": "brownbear29"
+}

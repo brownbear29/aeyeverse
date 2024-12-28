@@ -1,0 +1,16 @@
+{
+  "name": "#42 The Curious Last Sights VI",
+  "description": "An Eye Lord falling from the sky and turning to dust in the dirt.\\n\\n[Paradox Gates III - The Last Sights](https://eyeverse.world/paradox-gates)",
+  "image": "https://aeyeverse.brownbear29.xyz/images/42.png",
+  "attributes": [
+    {
+      "value": "Season",
+      "trait_type": "Paradox Gates"
+    },
+    {
+      "value": "Gate",
+      "trait_type": "III"
+    }
+  ],
+  "compiler": "brownbear29"
+}

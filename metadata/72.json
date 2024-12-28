@@ -1,0 +1,16 @@
+{
+  "name": "#72 Threat",
+  "description": "And that is when they both jumped - with their natural instincts to not back down from a fight, they attacked the Stone Golem fiercely, cutting off one of its arms.\\n\\n[Season 2, Chapter 4 - Threat](https://eyeverse.world/s2-ch4)",
+  "image": "https://aeyeverse.brownbear29.xyz/images/72.png",
+  "attributes": [
+    {
+      "value": "Season",
+      "trait_type": "2"
+    },
+    {
+      "value": "Chapter",
+      "trait_type": "4"
+    }
+  ],
+  "compiler": "brownbear29"
+}

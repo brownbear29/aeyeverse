@@ -1,0 +1,16 @@
+{
+  "name": "#53 A New Curse (Loss)",
+  "description": "It was precisely during one of these raids that it happened. In the middle of fighting, as he stabbed a sword through an enemy, he tried to call out to one of the Night Watchers for back up, but he found he could not speak. He tried again, tried to cry out, but the sound never came. This cost him some injuries, as he could not ask for anyone to aid him, and in the frenzy of war, the others were not paying attention. In the end, the battle was won, but his voice seemed to be lost for good.\\n\\n[Paradox Gates VIII - A New Curse](https://eyeverse.world/paradox-gates)",
+  "image": "https://aeyeverse.brownbear29.xyz/images/53.png",
+  "attributes": [
+    {
+      "value": "Season",
+      "trait_type": "Paradox Gates"
+    },
+    {
+      "value": "Gate",
+      "trait_type": "VIII"
+    }
+  ],
+  "compiler": "brownbear29"
+}

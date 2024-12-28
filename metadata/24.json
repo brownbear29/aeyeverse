@@ -1,0 +1,16 @@
+{
+  "name": "#24 The Demon at the Gates",
+  "description": "The Demon at the Gates was a paradoxical being. Though shrouded in dark and mystery, he was not born of the void as the rest of the creatures of the realm. He was spawned from pure light, and despite his title, he was no evil creature. They called him the Demon for his shadowy figure inspired fear when it first showed up, as nobody on the vast realm knew what or who he was, tall and lanky and with bright bright red eyes.\\n\\n[Paradox Gates I - The Demon at the Gates](https://eyeverse.world/paradox-gates)",
+  "image": "https://aeyeverse.brownbear29.xyz/images/24.png",
+  "attributes": [
+    {
+      "value": "Season",
+      "trait_type": "Paradox Gates"
+    },
+    {
+      "value": "Gate",
+      "trait_type": "I"
+    }
+  ],
+  "compiler": "brownbear29"
+}

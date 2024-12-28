@@ -1,0 +1,16 @@
+{
+  "name": "#59 A Prosperous Valley",
+  "description": "They pushed ahead with the little strength they had left, and were rewarded for their perseverance when they saw the valley that waited for them beyond. This time, there were no creatures to fight, but it was a prosperous land with enough food and water for them to settle there. And so they formed a new town that they added to the kingdom, with this army as their first population.\\n\\n[Season 1, Chapter 6 - Marching for War](https://eyeverse.world/chapter-6)",
+  "image": "https://aeyeverse.brownbear29.xyz/images/59.png",
+  "attributes": [
+    {
+      "value": "Season",
+      "trait_type": "1"
+    },
+    {
+      "value": "Chapter",
+      "trait_type": "6"
+    }
+  ],
+  "compiler": "brownbear29"
+}

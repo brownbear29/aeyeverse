@@ -1,0 +1,16 @@
+{
+  "name": "#75 Agram and Fetya",
+  "description": "His name was Light. The King's oldest and most formidable child stood at 8 feet tall and was known for being the fastest, most formidable of the Eye Kin, only surpassed by the King himself.\\n\\n[Season 2, Chapter 5 - Origin](https://eyeverse.world/s2-ch5)",
+  "image": "https://aeyeverse.brownbear29.xyz/images/75.png",
+  "attributes": [
+    {
+      "value": "Season",
+      "trait_type": "2"
+    },
+    {
+      "value": "Chapter",
+      "trait_type": "5"
+    }
+  ],
+  "compiler": "brownbear29"
+}

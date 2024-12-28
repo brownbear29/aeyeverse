@@ -1,0 +1,16 @@
+{
+  "name": "#52 The Fallen Lord",
+  "description": "His soul, however, remained - a dark, electric bundle that crawled deep into the dirt where it planted itself like a seed.\\n\\nFor a week, the weather was cold and grim, as though the sky were mourning his loss. And by the end of those dark days, a tree grew from where the Eye Lord's soul had fallen. This tree could not be cut, no matter how much they tried to acquire its sturdy wood for building structures or tools, and whenever someone tried, the sky would break into terrible rain. And so it became sacred, untouchable, and many payed tribute to it in hopes of clear skies ahead.\\n\\n[Paradox Gates VII - The Fallen Lord](https://eyeverse.world/paradox-gates)",
+  "image": "https://aeyeverse.brownbear29.xyz/images/52.png",
+  "attributes": [
+    {
+      "value": "Season",
+      "trait_type": "Paradox Gates"
+    },
+    {
+      "value": "Gate",
+      "trait_type": "VII"
+    }
+  ],
+  "compiler": "brownbear29"
+}

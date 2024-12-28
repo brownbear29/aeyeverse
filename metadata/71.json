@@ -1,0 +1,16 @@
+{
+  "name": "#71 Gaia Sanctuary",
+  "description": "Agram and Fetya, basking in the sunset at Gaia Sanctuary after another epic duel.\\n\\n[Season 2, Chapter 3 - Life](https://eyeverse.world/s2-ch3)",
+  "image": "https://aeyeverse.brownbear29.xyz/images/71.png",
+  "attributes": [
+    {
+      "value": "Season",
+      "trait_type": "2"
+    },
+    {
+      "value": "Chapter",
+      "trait_type": "3"
+    }
+  ],
+  "compiler": "brownbear29"
+}

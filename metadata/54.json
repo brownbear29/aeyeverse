@@ -1,0 +1,16 @@
+{
+  "name": "#53 A New Curse (Gain)",
+  "description": "The King decided then that the solution might be to pay tribute to the Watched in some way - the Royals had, after all, come from them. So he spoke to them, and with his power over light, he blessed them with a new ability - the power to go unseen when they wished, and to show themselves at will.\\n\\n[Paradox Gates VIII - A New Curse](https://eyeverse.world/paradox-gates)",
+  "image": "https://aeyeverse.brownbear29.xyz/images/54.png",
+  "attributes": [
+    {
+      "value": "Season",
+      "trait_type": "Paradox Gates"
+    },
+    {
+      "value": "Gate",
+      "trait_type": "VIII"
+    }
+  ],
+  "compiler": "brownbear29"
+}

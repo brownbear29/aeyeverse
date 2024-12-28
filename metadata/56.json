@@ -1,0 +1,16 @@
+{
+  "name": "#56 The Mountain Top",
+  "description": "The rumors were intriguing. There was a very large mountain in one of the places that had been recently added to the kingdom - a snowy giant that towered over the newly established small town at its skirts.\\n\\nThe gossip started out small, Watched telling the tale of the top of the mountain, and what could be accomplished by reaching it: enlightenment. The tall tale indicated that at the highest point of the mountain, as close as subjects could get to the King's court in the sky, there would be a light, blinding and overpowering that would invade whoever was there...\\n\\n[Paradox Gates IX - The Mountain Top](https://eyeverse.world/paradox-gates)",
+  "image": "https://aeyeverse.brownbear29.xyz/images/56.png",
+  "attributes": [
+    {
+      "value": "Season",
+      "trait_type": "Paradox Gates"
+    },
+    {
+      "value": "Gate",
+      "trait_type": "IX"
+    }
+  ],
+  "compiler": "brownbear29"
+}

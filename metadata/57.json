@@ -1,0 +1,17 @@
+{
+  "name": "#57 Prophecy",
+  "description": "The Eye Lords tied the prophet to a tree and summoned light into their hands. As the Watched stared, too fearful to stop the Eye Lords, but also terrified for their oracle, they lit the tree. The prophet did not seem affected, remaining calm even as the flames began to reach his ankles. He looked straight ahead. His last words would haunt the kingdom for a long time to come.\\n\\n[Paradox Gates X - Prophecy](https://eyeverse.world/paradox-gates)",
+  "image": "https://aeyeverse.brownbear29.xyz/images/57.png",
+  "animation_url": "https://aeyeverse.brownbear29.xyz/images/57.mp4",
+  "attributes": [
+    {
+      "value": "Season",
+      "trait_type": "Paradox Gates"
+    },
+    {
+      "value": "Gate",
+      "trait_type": "X"
+    }
+  ],
+  "compiler": "brownbear29"
+}
