@@ -24,6 +24,39 @@ a:hover {
     color: teal;
 }
 
+
+/* Social icons */
+.social-icons {
+    display: flex;
+    justify-content: center; /* Centers the icons */
+    gap: 20px; /* Space between icons */
+    margin-top: 20px; /* Space from top */
+}
+
+.social-icon {
+    text-decoration: none; /* Removes underline */
+    transition: transform 0.3s ease; /* Smooth transition for hover effects */
+    border-bottom: none;
+}
+
+.social-icon.opensea .opensea-icon,
+.social-icon.magiceden .magiceden-icon {
+    width: 40px; /* Icon size */
+    height: auto;
+}
+
+
+/* Hover effects for all icons */
+.social-icon:hover {
+    transform: scale(1.1); /* Slightly enlarge icon on hover */
+}
+
+.social-icon.x:hover .x-icon,
+.social-icon.opensea:hover .opensea-icon,
+.social-icon.magiceden:hover .magiceden-icon {
+    filter: brightness(1.2); /* Slight brightness change on hover */
+}
+
 /* Image grid styles */
 .image-grid {
     display: grid;
