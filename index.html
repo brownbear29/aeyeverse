@@ -1,14 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8">
     <title>&AElig;yeverse</title>
     <link id="style" rel="stylesheet" type="text/css" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
       <div style="text-align: center;">
         <h1>&AElig;yeverse</h1>
-        <p>Created by <a href="https://x.com/brownbear2929" target="_blank">brownbear29</a></p>
-        <p>Inspired by the <a href="https://eyeverse.world" target="_blank">Eyeverse</a></p>
+        
+        <p>Created by <a href="https://x.com/brownbear2929" target="_blank">brownbear29</a>. Inspired by the <a href="https://eyeverse.world" target="_blank">Eyeverse</a></p>
+        
+        <div class="image-grid" id="imageGrid"></div>
+        <div class="lightbox" id="lightbox">
+          <span class="close" id="closeLightbox">&times;</span>
+          <img id="lightboxImage" alt="Expanded view">
+        </div>
+        <script src="script.js"></script>
+
       </div>
   </body>
 </html>
