@@ -97,3 +97,42 @@ a:hover {
 .lightbox .close:hover {
     color: #f00;
 }
+
+/* Styles for the video placeholder container */
+.video-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer; /* Indicate that the image is clickable */
+}
+
+/* The overlay to appear on video placeholders */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4); /* Semi-transparent black overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    pointer-events: none; /* Make sure overlay doesn't block clicks */
+}
+
+/* Play icon styles */
+.play-icon {
+    font-size: 40px;
+    color: white;
+}
+
+/* Show the overlay when hovering over the video placeholder */
+.video-container:hover .overlay {
+    opacity: 1;
+}
+
+/* Optional: Optional hover effect for image when mouse hovers over */
+.video-container img {
+    transition: opacity 0.3s ease-in-out;
+}
