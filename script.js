@@ -54,9 +54,8 @@ for (let i = 1; i <= totalImages; i++) {
     imageGrid.appendChild(gridItem);
 }
 
-// Open the lightbox with the appropriate content
 function openLightbox(index, extension) {
-    // Remove previous content (if any) in the lightbox, including any labels
+    // Remove previous content (if any) in the lightbox
     const existingContent = lightbox.querySelector('.lightbox-content');
     if (existingContent) {
         existingContent.remove();
@@ -67,25 +66,59 @@ function openLightbox(index, extension) {
     contentContainer.classList.add('lightbox-content');
     lightbox.appendChild(contentContainer);
 
-    // If it's a video, replace the image element with a video element
+    // Create a container for media and overlay
+    const mediaContainer = document.createElement('div');
+    mediaContainer.classList.add('lightbox-media');
+    contentContainer.appendChild(mediaContainer);
+
+    // Fetch metadata
+    fetch(`metadata/${index}.json`)
+        .then((response) => response.json())
+        .then((data) => {
+            // Add overlay title
+            const titleOverlay = document.createElement('div');
+            titleOverlay.textContent = data.name || 'No Title';
+            titleOverlay.classList.add('lightbox-overlay', 'lightbox-title-overlay');
+            mediaContainer.appendChild(titleOverlay);
+
+            // Add overlay description
+            if (data.description && data.description.trim()) {
+                const descriptionOverlay = document.createElement('div');
+                descriptionOverlay.innerHTML = parseMarkdown(data.description); // Use parseMarkdown for formatting
+                descriptionOverlay.classList.add('lightbox-overlay', 'lightbox-description-overlay');
+                mediaContainer.appendChild(descriptionOverlay);
+            }
+        })
+        .catch((error) => {
+            console.error(`Error fetching metadata for ${index}:`, error);
+
+            // Fallback title overlay
+            const titleOverlay = document.createElement('div');
+            titleOverlay.textContent = 'No Title';
+            titleOverlay.classList.add('lightbox-overlay', 'lightbox-title-overlay');
+            mediaContainer.appendChild(titleOverlay);
+    });
+
+
+    // Handle video
     if (extension === 'mp4') {
         const videoElement = document.createElement('video');
         videoElement.src = `${imageFolder}/${index}.mp4`;
         videoElement.controls = true;
         videoElement.autoplay = true;
-        videoElement.style.maxWidth = '95%';  // Limit width to 90% of the screen width
-        videoElement.style.maxHeight = '90vh'; // Limit height to 90% of the viewport height
-        videoElement.style.objectFit = 'contain'; // Ensure the video maintains its aspect ratio
-        contentContainer.appendChild(videoElement);
+        videoElement.style.maxWidth = '100%';
+        videoElement.style.maxHeight = '90vh';
+        videoElement.style.objectFit = 'contain';
+        mediaContainer.appendChild(videoElement);
     } else {
-        // Handle image cases (.png or .gif)
+        // Handle image
         const imgElement = document.createElement('img');
         imgElement.src = `${imageFolder}/${index}.${extension}`;
         imgElement.alt = ''; // No alt text for lightbox images
-        imgElement.id = 'lightboxImage';
-        imgElement.style.maxWidth = '95%'; // Prevent the image from being too large
-        imgElement.style.maxHeight = '90vh'; // Limit the height to 90% of viewport height
-        contentContainer.appendChild(imgElement);
+        imgElement.style.maxWidth = '100%';
+        imgElement.style.maxHeight = '90vh';
+        imgElement.style.objectFit = 'contain';
+        mediaContainer.appendChild(imgElement);
     }
 
     lightbox.style.display = 'flex';
@@ -108,4 +141,14 @@ function closeLightboxHandler() {
         videoElement.pause(); // Pause the video
         videoElement.currentTime = 0; // Reset playback to the start
     }
+}
+
+// Function to parse basic Markdown
+function parseMarkdown(markdown) {
+    if (!markdown) return '';
+    // Replace \n with <br> for line breaks
+    let html = markdown.replace(/\\n/g, '<br>');
+    // Convert Markdown links [text](url) to <a> tags
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+    return html;
 }

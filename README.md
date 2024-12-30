@@ -1,3 +1,3 @@
 # AEyeverse
 
-Contains metadata and images for the AEyeverse NFT collection
+Website, metadata and images for the AEyeverse NFT collection

@@ -131,6 +131,76 @@ a:hover {
     color: #f00;
 }
 
+/* Lightbox media container */
+.lightbox-media {
+    position: relative;
+    width: 100%;
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #111;
+    overflow: hidden;
+}
+
+/* General overlay styles */
+.lightbox-overlay {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    padding: 10px 15px;
+    background: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
+    color: white;
+    font-size: 1rem;
+    text-align: center;
+    box-sizing: border-box;
+    opacity: 0; /* Hidden by default */
+    transform: translateY(-20px); /* Slide effect */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 10;
+    pointer-events: none; /* Prevent hover interference, except for specific elements */
+}
+
+/* Title overlay at the top */
+.lightbox-title-overlay {
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px 15px;
+    background: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
+    color: white;
+    font-size: 1.2rem;
+    /*text-align: left; /* Align text to the left */
+    box-sizing: border-box;
+    opacity: 0; /* Hidden by default */
+    transform: translateY(-20px); /* Slide effect from above */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 10;
+    pointer-events: none; /* Prevent interaction */
+}
+
+/* Make the description clickable */
+.lightbox-description-overlay {
+    bottom: 0;
+    transform: translateY(20px); /* Slide effect from below */
+    pointer-events: auto; /* Allow interaction for this overlay */
+}
+
+/* Hover effect on the media container */
+.lightbox-media:hover .lightbox-overlay {
+    opacity: 1; /* Make visible */
+    transform: translateY(0); /* Reset slide effect */
+}
+
+/* Ensure lightbox image fits within media container */
+.lightbox-media img,
+.lightbox-media video {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+
 /* Styles for the video placeholder container */
 .video-container {
     position: relative;
@@ -168,4 +238,27 @@ a:hover {
 /* Optional: Optional hover effect for image when mouse hovers over */
 .video-container img {
     transition: opacity 0.3s ease-in-out;
+}
+
+/* Fall back grid styling for no javascript */
+.fallback-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsive grid */
+    gap: 10px; /* Space between images */
+    padding: 20px;
+}
+
+.fallback-grid a {
+    display: block;
+    width: 100%;
+    text-decoration: none;
+    border-bottom: none;
+}
+
+.fallback-grid img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px; /* Optional: Add rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional: Add shadow for depth */
 }
