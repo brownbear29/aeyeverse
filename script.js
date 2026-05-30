@@ -116,8 +116,8 @@ function renderNextBatch() {
 
 // Initial batch, then lazily reveal the rest via an IntersectionObserver sentinel.
 (function initGrid() {
-    const hasMore = renderNextBatch();
-    if (!hasMore) return;
+    renderNextBatch();
+    if (nextIndex > totalImages) return; // everything fit in the first batch
 
     const sentinel = document.createElement('div');
     sentinel.id = 'gridSentinel';
@@ -125,22 +125,38 @@ function renderNextBatch() {
     imageGrid.insertAdjacentElement('afterend', sentinel);
 
     if (!('IntersectionObserver' in window)) {
-        // Fallback: render everything at once.
+        // No IO support: render everything at once.
         while (renderNextBatch()) {}
         sentinel.remove();
         return;
     }
 
-    const observer = new IntersectionObserver((entries) => {
-        for (const entry of entries) {
-            if (!entry.isIntersecting) continue;
-            const more = renderNextBatch();
-            if (!more) {
-                observer.disconnect();
-                sentinel.remove();
-            }
+    const TRIGGER_MARGIN = 600; // keep this many px below the viewport populated
+
+    // Render batches until the grid is exhausted or the sentinel drops below the
+    // trigger zone. Rendering only one batch per intersection stalls the grid:
+    // appending a batch keeps the (still-nearby) sentinel continuously
+    // intersecting, so the observer never fires a second time. Filling until the
+    // sentinel leaves the zone guarantees forward progress on every callback.
+    const fill = () => {
+        let guard = 0;
+        while (nextIndex <= totalImages) {
+            const viewportH = window.innerHeight || document.documentElement.clientHeight || 0;
+            // getBoundingClientRect forces a reflow, so this reflects batches just
+            // appended (heights are reserved via width/height + aspect-ratio).
+            if (sentinel.getBoundingClientRect().top > viewportH + TRIGGER_MARGIN) break;
+            renderNextBatch();
+            if (++guard > totalImages) break; // safety against runaway loops
         }
-    }, { rootMargin: '600px 0px' });
+        if (nextIndex > totalImages) {
+            observer.disconnect();
+            sentinel.remove();
+        }
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) fill();
+    }, { rootMargin: `${TRIGGER_MARGIN}px 0px` });
     observer.observe(sentinel);
 })();
 
