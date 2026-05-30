@@ -1,87 +1,89 @@
 # Performance Audit
 
 A review of the AEyeverse static gallery (served via GitHub Pages) with prioritized
-recommendations. Items marked **[done]** are implemented; **[needs action]** items require a
-maintainer decision.
+recommendations. Items marked **[done]** are implemented; **[deferred]** items are intentionally
+left for later.
 
 ## TL;DR
 
 The page is functionally a single screen that originally referenced **~341 MB of media**.
-The dominant cost was image/video weight, not code. Both layers are now addressed: the grid
-serves lightweight WebP thumbnails and the lightbox serves full-size WebP / re-encoded MP4s.
+The dominant cost was image/video weight, not code. The grid now serves responsive AVIF/WebP
+thumbnails (rendered incrementally), and the lightbox serves full-size AVIF/WebP / re-encoded
+MP4s.
 
 | Asset class | Count | Source size | Optimized |
 | --- | --- | --- | --- |
-| PNG | 77 | ~250 MB | thumbs ~50–85 KB each, full ~200–500 KB |
-| GIF | 3 | ~33 MB | animated WebP |
+| PNG | 77 | ~250 MB | thumb AVIF ~20–40 KB (400px), full AVIF ~150–250 KB |
+| GIF | 3 | ~33 MB | lossy animated WebP (`11.gif` 18.7 MB → 10.7 MB) |
 | MP4 | 2 | ~45 MB | `73.mp4` 36 MB → 20 MB (faststart) |
-| **Source `images/`** | | **341 MB** | grid thumbs total **~31 MB**, lazy-loaded |
+| **Source `images/`** | | **341 MB** | derivatives ~124 MB total, served on demand |
 
-## 1. Oversized images — **[done]**
+## 1. Oversized images → responsive AVIF/WebP — **[done]**
 
 Grid items are never displayed larger than 400 px, yet the source PNGs were 1664–2048 px and
-2–8 MB. `scripts/optimize-images.sh` now generates:
+2–8 MB. `scripts/optimize-images.sh` now generates, per still image:
 
-- `images/thumbs/<n>.webp` — 800 px WebP grid thumbnails
-- `images/full/<n>.webp` — full-size WebP for the lightbox (q82)
+- `images/thumbs/<n>-400.{webp,avif}` and `images/thumbs/<n>-800.{webp,avif}` — grid (1x/2x)
+- `images/full/<n>.{webp,avif}` — lightbox
 
-`script.js` sets `USE_OPTIMIZED_ASSETS = true` to serve them. Representative reductions:
-`13.png` 6.6 MB → **66 KB** thumb / 485 KB full; `1.png` 3.1 MB → **83 KB** thumb.
+`script.js` (`USE_OPTIMIZED_ASSETS = true`) serves them via `<picture>` with an AVIF source,
+a WebP source, and a WebP `<img>` fallback. Example (`1.png`, 3.1 MB source): 400 px AVIF
+**23 KB**, 800 px AVIF 71 KB, full AVIF 238 KB.
 
-## 2. Heavy GIFs and the large MP4 — **[done]**
+## 2. Responsive `srcset` / `sizes` — **[done]**
 
-- The three GIFs are re-encoded to animated WebP.
-- `73.mp4` (36 MB) → **20 MB** and `57.mp4` (6 MB) → 3 MB via H.264 CRF 26 + `-movflags
-  +faststart` (streamable). The lightbox uses `preload="metadata"` so clips aren't fetched
-  until playback, and now points at the re-encoded `images/full/*.mp4`.
+Each `<source>` exposes `400w` + `800w` candidates with `sizes="(max-width: 600px) 50vw,
+200px"`, so the browser downloads the smallest image that fits the slot and device DPR.
 
-## 3. Corrupt source asset: `images/38.png` — **[resolved]**
+## 3. AVIF with WebP fallback — **[done]**
 
-`38.png` was originally **truncated/corrupt** — `cwebp` and `ffmpeg` both rejected it
-("chunk too big" / read overflow) and its bottom ~9% was missing. It has since been replaced
-with a clean 1664×1664 original and its WebP derivatives regenerated and verified (decodes
-cleanly, no black bar). The hardened optimizer also gained a Pillow-based truncated-PNG
-recovery fallback so a single bad source can't abort the whole batch in future.
+AVIF is offered first (consistently ~15–25% smaller than WebP here), WebP second, and a WebP
+`<img>` as the universal fallback — all via native `<picture>` negotiation.
 
-## 4. Render-blocking, unused web font — **[done]**
+## 4. Incremental (virtualized) grid rendering — **[done]**
 
-Removed the render-blocking `VT323` Google Fonts `@import` (the site uses Arial).
+The grid renders in batches of 24 via a DocumentFragment, with an `IntersectionObserver`
+sentinel (600 px rootMargin) pulling in the next batch as the user scrolls. Browsers without
+`IntersectionObserver` fall back to rendering everything. This keeps the initial DOM small as
+the collection grows beyond the current 80 items.
 
-## 5. Grid construction & DOM thrashing — **[done]**
+## 5. Heavy GIFs and the large MP4 — **[done]**
 
-Grid is built in a `DocumentFragment` and attached once (single reflow instead of ~80).
+GIFs are re-encoded to **lossy** animated WebP (`11.gif` 18.7 MB → 10.7 MB). `73.mp4`
+(36 MB) → 20 MB and `57.mp4` (6 MB) → 3 MB via H.264 CRF 26 + `-movflags +faststart`. The
+lightbox uses `preload="metadata"` and points at the re-encoded `images/full/*.mp4`.
 
-## 6. Loading priorities & lazy loading — **[done]**
+## 6. Corrupt source asset `images/38.png` — **[resolved]**
 
-Eager-load + `fetchPriority=high` for the first row, lazy/low for the rest; `decoding=async`;
-`content-visibility: auto` + `contain-intrinsic-size` to skip off-screen work.
+Originally truncated/corrupt; replaced with a clean 1664×1664 original and regenerated. The
+optimizer also gained a Pillow-based truncated-PNG recovery fallback so one bad source can't
+abort the batch.
 
-## 7. Cumulative Layout Shift (CLS) — **[done]**
+## 7. Render-blocking font, DOM thrashing, CLS, script, metadata — **[done]**
 
-Explicit `width/height` on grid images + CSS `aspect-ratio: 1 / 1` (assets are square).
+- Removed the render-blocking unused `VT323` Google Fonts `@import`.
+- Grid built off-DOM (DocumentFragment) — one reflow per batch.
+- Eager-load + `fetchPriority=high` for the first row, lazy/low otherwise; `decoding=async`;
+  `content-visibility: auto` + `contain-intrinsic-size`.
+- Explicit `width/height` + CSS `aspect-ratio: 1 / 1` to remove layout shift.
+- `script.js` is `defer`-loaded; `metadata/<n>.json` responses are cached in-memory.
 
-## 8. Script loading — **[done]**
+## 8. Unused assets removed — **[done]**
 
-`script.js` uses `defer` so it no longer blocks HTML parsing.
+Deleted the unreferenced `x-logo.png` and the `display:none` social-icons block (and its
+`opensea-logo.png` / `magiceden-logo.png`, which were only used by that hidden block) along
+with the now-dead `.social-icon*` CSS.
 
-## 9. Repeated metadata fetches — **[done]**
+## 9. Caching headers / CDN — **[deferred]**
 
-`metadata/<n>.json` responses are cached in-memory (with failure eviction for retries).
-
-## 10. Further opportunities (not yet applied)
-
-- **Caching headers / CDN**: GitHub Pages sets a short `Cache-Control`. A CDN in front, or
-  moving large media to object storage with long-lived immutable caching, helps repeat visits.
-- **AVIF**: encode AVIF alongside WebP for another ~20–30% on top, served via `<picture>`.
-- **Responsive `srcset`**: serve multiple thumbnail widths and let the browser choose.
-- **Pagination / virtualization** if the collection grows well beyond 80 items.
-- **Unused assets**: `x-logo.png` (27 KB) is committed but unreferenced; the social-icons
-  block is `display:none`. Remove or wire them up.
+GitHub Pages sets a short `Cache-Control`. Putting a CDN in front, or moving large media to
+object storage with long-lived immutable caching, would improve repeat visits. Intentionally
+left for a later decision.
 
 ## How to (re)generate optimized assets
 
 ```bash
-# Requires libwebp (cwebp/gif2webp); ffmpeg for MP4; python3 + Pillow as a PNG-recovery fallback
+# Requires libwebp (cwebp/gif2webp), libavif-bin (avifenc), ffmpeg, and python3+Pillow (PNG recovery)
 ./scripts/optimize-images.sh
 # USE_OPTIMIZED_ASSETS is already true in script.js
 ```
