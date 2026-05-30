@@ -2,7 +2,7 @@
 
 A review of the AEyeverse static gallery (served via GitHub Pages) with prioritized
 recommendations. Items marked **[done]** are implemented; **[needs action]** items require a
-maintainer decision or a clean source asset.
+maintainer decision.
 
 ## TL;DR
 
@@ -35,14 +35,13 @@ Grid items are never displayed larger than 400 px, yet the source PNGs were 1664
   +faststart` (streamable). The lightbox uses `preload="metadata"` so clips aren't fetched
   until playback, and now points at the re-encoded `images/full/*.mp4`.
 
-## 3. Corrupt source asset: `images/38.png` — **[needs action]**
+## 3. Corrupt source asset: `images/38.png` — **[resolved]**
 
-`38.png` is **truncated/corrupt** — `cwebp` and `ffmpeg` both reject it ("chunk too big" /
-read overflow), and an image upload of the same 2,370,957-byte file also failed to decode.
-Its bottom ~9% (≈ rows 1518–1664) is missing. The optimizer produced a best-effort WebP via
-a truncated-image recovery pass, so the gallery isn't broken, **but it shows a black bar at
-the bottom**. Action: replace `images/38.png` with a clean original and re-run the optimizer
-(or just regenerate `38`).
+`38.png` was originally **truncated/corrupt** — `cwebp` and `ffmpeg` both rejected it
+("chunk too big" / read overflow) and its bottom ~9% was missing. It has since been replaced
+with a clean 1664×1664 original and its WebP derivatives regenerated and verified (decodes
+cleanly, no black bar). The hardened optimizer also gained a Pillow-based truncated-PNG
+recovery fallback so a single bad source can't abort the whole batch in future.
 
 ## 4. Render-blocking, unused web font — **[done]**
 
