@@ -1,101 +1,88 @@
 # Performance Audit
 
 A review of the AEyeverse static gallery (served via GitHub Pages) with prioritized
-recommendations. Items marked **[done]** are implemented in this branch; the rest are
-recommendations that require regenerating binary assets or maintainer decisions.
+recommendations. Items marked **[done]** are implemented; **[needs action]** items require a
+maintainer decision or a clean source asset.
 
 ## TL;DR
 
-The page is functionally a single screen that eagerly references **~341 MB of media**.
-The dominant cost is image/video weight, not code. The code-level fixes here improve
-rendering and reduce layout shift, but the biggest win — by an order of magnitude — is
-serving appropriately sized, modern-format images.
+The page is functionally a single screen that originally referenced **~341 MB of media**.
+The dominant cost was image/video weight, not code. Both layers are now addressed: the grid
+serves lightweight WebP thumbnails and the lightbox serves full-size WebP / re-encoded MP4s.
 
-| Asset class | Count | Size | Notes |
+| Asset class | Count | Source size | Optimized |
 | --- | --- | --- | --- |
-| PNG | 77 | ~250 MB | 1664×1664–2048×2048, 2–8 MB each |
-| GIF | 3 | ~33 MB | up to 19 MB (`11.gif`) |
-| MP4 | 2 | ~45 MB | `73.mp4` is 38 MB |
-| **Total `images/`** | | **341 MB** | |
+| PNG | 77 | ~250 MB | thumbs ~50–85 KB each, full ~200–500 KB |
+| GIF | 3 | ~33 MB | animated WebP |
+| MP4 | 2 | ~45 MB | `73.mp4` 36 MB → 20 MB (faststart) |
+| **Source `images/`** | | **341 MB** | grid thumbs total **~31 MB**, lazy-loaded |
 
-## 1. Oversized images are the #1 problem (highest impact)
+## 1. Oversized images — **[done]**
 
-Grid items are never displayed larger than **400 px** (≈800 px on retina), yet the source
-PNGs are **1664–2048 px** and 2–8 MB. Every visitor downloads full-resolution masters just
-to see 150–400 px thumbnails.
+Grid items are never displayed larger than 400 px, yet the source PNGs were 1664–2048 px and
+2–8 MB. `scripts/optimize-images.sh` now generates:
 
-**Recommendations**
+- `images/thumbs/<n>.webp` — 800 px WebP grid thumbnails
+- `images/full/<n>.webp` — full-size WebP for the lightbox (q82)
 
-- **Generate downscaled thumbnails** (≈800 px) for the grid and reserve full-size only for
-  the lightbox. See `scripts/optimize-images.sh`.
-- **Switch PNG → WebP (or AVIF)**. For this kind of artwork WebP typically cuts size by
-  **70–90%** at visually identical quality. AVIF goes further still.
-- After running the script, set `USE_OPTIMIZED_ASSETS = true` in `script.js` to serve
-  `images/thumbs/*.webp` in the grid and `images/full/*.webp` in the lightbox.
-- For maximum compatibility, serve via `<picture>` with a PNG fallback, or rely on the fact
-  that WebP is supported by all current browsers.
+`script.js` sets `USE_OPTIMIZED_ASSETS = true` to serve them. Representative reductions:
+`13.png` 6.6 MB → **66 KB** thumb / 485 KB full; `1.png` 3.1 MB → **83 KB** thumb.
 
-Estimated effect: first-load transfer for the grid drops from **hundreds of MB to a few MB**.
+## 2. Heavy GIFs and the large MP4 — **[done]**
 
-## 2. Heavy GIFs and an un-throttled MP4
+- The three GIFs are re-encoded to animated WebP.
+- `73.mp4` (36 MB) → **20 MB** and `57.mp4` (6 MB) → 3 MB via H.264 CRF 26 + `-movflags
+  +faststart` (streamable). The lightbox uses `preload="metadata"` so clips aren't fetched
+  until playback, and now points at the re-encoded `images/full/*.mp4`.
 
-- `11.gif` (19 MB) and `14.gif` (9.5 MB) are enormous. Animated GIF is an inefficient
-  format — converting to **animated WebP** or a muted autoplaying `<video>` (MP4/WebM) is
-  typically **5–10× smaller**.
-- `73.mp4` (38 MB) is only loaded on lightbox open (good), and now uses `preload="metadata"`
-  **[done]** so the full clip isn't fetched until playback. Re-encoding with H.264 CRF ~26 +
-  `-movflags +faststart` (in the script) will shrink it substantially and enable streaming.
+## 3. Corrupt source asset: `images/38.png` — **[needs action]**
 
-## 3. Render-blocking, unused web font **[done]**
+`38.png` is **truncated/corrupt** — `cwebp` and `ffmpeg` both reject it ("chunk too big" /
+read overflow), and an image upload of the same 2,370,957-byte file also failed to decode.
+Its bottom ~9% (≈ rows 1518–1664) is missing. The optimizer produced a best-effort WebP via
+a truncated-image recovery pass, so the gallery isn't broken, **but it shows a black bar at
+the bottom**. Action: replace `images/38.png` with a clean original and re-run the optimizer
+(or just regenerate `38`).
 
-`style.css` imported `VT323` from Google Fonts via `@import`, which is render-blocking and
-triggers extra DNS/TLS/round-trips — but the font was never used (`body` is `Arial`). Removed.
+## 4. Render-blocking, unused web font — **[done]**
 
-## 4. Grid construction & DOM thrashing **[done]**
+Removed the render-blocking `VT323` Google Fonts `@import` (the site uses Arial).
 
-The grid was appended one node at a time to the live DOM (up to ~80 layout recalculations).
-Now built in a `DocumentFragment` and attached once (a single reflow).
+## 5. Grid construction & DOM thrashing — **[done]**
 
-## 5. Loading priorities & lazy loading **[done]**
+Grid is built in a `DocumentFragment` and attached once (single reflow instead of ~80).
 
-- Native `loading="lazy"` was already present; we now **eager-load the first row** and set
-  `fetchPriority` high/low so above-the-fold paints fast while the rest defer.
-- Added `decoding="async"` so image decode doesn't block the main thread.
-- Added `content-visibility: auto` + `contain-intrinsic-size` so off-screen grid items skip
-  layout/paint work.
+## 6. Loading priorities & lazy loading — **[done]**
 
-## 6. Cumulative Layout Shift (CLS) **[done]**
+Eager-load + `fetchPriority=high` for the first row, lazy/low for the rest; `decoding=async`;
+`content-visibility: auto` + `contain-intrinsic-size` to skip off-screen work.
 
-Grid images had no dimensions, so the page reflowed as each image arrived. Added explicit
-`width/height` attributes and a CSS `aspect-ratio: 1 / 1` (all assets are square) to reserve
-space up front.
+## 7. Cumulative Layout Shift (CLS) — **[done]**
 
-## 7. Script loading **[done]**
+Explicit `width/height` on grid images + CSS `aspect-ratio: 1 / 1` (assets are square).
 
-`script.js` now uses `defer` so it doesn't block HTML parsing.
+## 8. Script loading — **[done]**
 
-## 8. Repeated metadata fetches **[done]**
+`script.js` uses `defer` so it no longer blocks HTML parsing.
 
-Opening the same lightbox item refetched its `metadata/<n>.json` every time. Responses are
-now cached in-memory (with failure eviction so retries still work).
+## 9. Repeated metadata fetches — **[done]**
 
-## 9. Further opportunities (not yet applied)
+`metadata/<n>.json` responses are cached in-memory (with failure eviction for retries).
 
-- **Caching headers / CDN**: GitHub Pages sets a short `Cache-Control` (~10 min). Putting a
-  CDN (e.g. Cloudflare) in front, or moving large media to object storage with long-lived
-  immutable caching, would help repeat visits.
-- **Responsive `srcset`**: serve multiple thumbnail widths and let the browser pick.
-- **Pagination / virtualization**: if the collection grows well beyond 80 items, render the
-  grid incrementally (e.g. IntersectionObserver) instead of all at once.
-- **Unused assets**: `x-logo.png` (27 KB) is committed but not referenced by `index.html`;
-  the social-icons block is `display:none`. Remove or wire them up to avoid shipping dead
-  weight (they aren't requested by the browser today, but they bloat the repo/clone).
+## 10. Further opportunities (not yet applied)
 
-## How to apply the asset optimizations
+- **Caching headers / CDN**: GitHub Pages sets a short `Cache-Control`. A CDN in front, or
+  moving large media to object storage with long-lived immutable caching, helps repeat visits.
+- **AVIF**: encode AVIF alongside WebP for another ~20–30% on top, served via `<picture>`.
+- **Responsive `srcset`**: serve multiple thumbnail widths and let the browser choose.
+- **Pagination / virtualization** if the collection grows well beyond 80 items.
+- **Unused assets**: `x-logo.png` (27 KB) is committed but unreferenced; the social-icons
+  block is `display:none`. Remove or wire them up.
+
+## How to (re)generate optimized assets
 
 ```bash
-# Requires libwebp (cwebp/gif2webp) and optionally ffmpeg + ImageMagick
+# Requires libwebp (cwebp/gif2webp); ffmpeg for MP4; python3 + Pillow as a PNG-recovery fallback
 ./scripts/optimize-images.sh
-# then edit script.js:
-#   const USE_OPTIMIZED_ASSETS = true;
+# USE_OPTIMIZED_ASSETS is already true in script.js
 ```
