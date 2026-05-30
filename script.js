@@ -4,32 +4,51 @@ const imageGrid = document.getElementById('imageGrid');
 const lightbox = document.getElementById('lightbox');
 const closeLightbox = document.getElementById('closeLightbox');
 
-// Dynamically generate grid elements
-for (let i = 1; i <= totalImages; i++) {
-    let element;
-    let extension;
-    let gridItem;
+const videoIndices = new Set([57, 73]);
+const gifIndices = new Set([11, 14, 70]);
 
-    // Determine the file extension
-    if (i === 57 || i === 73) {
-        extension = 'png'; // Use PNG placeholders for videos
-        gridItem = document.createElement('div');
+// Flip to `true` after running scripts/optimize-images.sh to serve the lightweight
+// WebP thumbnails in the grid (and full-size WebP in the lightbox). Leaving it false
+// keeps the original full-resolution PNG/GIF behaviour.
+const USE_OPTIMIZED_ASSETS = false;
+
+// How many of the first images to load eagerly (above-the-fold); the rest stay lazy.
+const EAGER_LOAD_COUNT = 8;
+
+// Resolve the grid (thumbnail) source for a given item.
+function gridSrc(i, extension) {
+    if (USE_OPTIMIZED_ASSETS) {
+        return `${imageFolder}/thumbs/${i}.webp`;
+    }
+    return `${imageFolder}/${i}.${extension}`;
+}
+
+// Build the whole grid off-DOM, then attach once. Appending each item directly to
+// the live grid forces the browser to recalculate layout up to 80 times; a single
+// DocumentFragment insertion triggers just one reflow.
+const fragment = document.createDocumentFragment();
+
+for (let i = 1; i <= totalImages; i++) {
+    const isVideo = videoIndices.has(i);
+    const extension = isVideo ? 'png' : gifIndices.has(i) ? 'gif' : 'png';
+
+    const gridItem = document.createElement('div');
+    if (isVideo) {
         gridItem.classList.add('video-container'); // Add a container for overlay
-    } else if (i === 11 || i === 14 || i === 70) {
-        extension = 'gif'; // GIF replacements
-        gridItem = document.createElement('div');
-    } else {
-        extension = 'png';
-        gridItem = document.createElement('div');
     }
 
-    element = document.createElement('img');
-    element.src = `${imageFolder}/${i}.${extension}`; // Set the image source
+    const element = document.createElement('img');
+    element.src = gridSrc(i, extension); // Set the image source
     element.alt = `Image ${i}`; // Set the alt text (for accessibility)
-    element.loading = 'lazy'; // Enable native lazy loading
+    // Eager-load the first row so the page paints quickly; lazy-load the rest.
+    element.loading = i <= EAGER_LOAD_COUNT ? 'eager' : 'lazy';
+    element.decoding = 'async'; // Avoid blocking the main thread while decoding
+    element.fetchPriority = i <= EAGER_LOAD_COUNT ? 'high' : 'low';
+    element.width = 400; // Explicit dimensions reserve layout space (reduces CLS)
+    element.height = 400;
     element.classList.add('grid-item'); // Optional: Add a class for styling
 
-    if (i === 57 || i === 73) {
+    if (isVideo) {
         // Add the overlay and play icon for video placeholders
         const overlay = document.createElement('div');
         overlay.classList.add('overlay');
@@ -42,17 +61,15 @@ for (let i = 1; i <= totalImages; i++) {
 
     // Add click event to open the lightbox
     element.addEventListener('click', () => {
-        if (i === 57 || i === 73) {
-            openLightbox(i, 'mp4'); // Open video in lightbox
-        } else {
-            openLightbox(i, extension); // Open image in lightbox
-        }
+        openLightbox(i, isVideo ? 'mp4' : extension);
     });
 
     // Append the image to the grid container (with overlay if video)
     gridItem.appendChild(element);
-    imageGrid.appendChild(gridItem);
+    fragment.appendChild(gridItem);
 }
+
+imageGrid.appendChild(fragment);
 
 function openLightbox(index, extension) {
     // Remove previous content (if any) in the lightbox
@@ -71,9 +88,8 @@ function openLightbox(index, extension) {
     mediaContainer.classList.add('lightbox-media');
     contentContainer.appendChild(mediaContainer);
 
-    // Fetch metadata
-    fetch(`metadata/${index}.json`)
-        .then((response) => response.json())
+    // Fetch metadata (cached so re-opening the same item avoids a network round-trip)
+    fetchMetadata(index)
         .then((data) => {
             // Add overlay title
             const titleOverlay = document.createElement('div');
@@ -106,6 +122,7 @@ function openLightbox(index, extension) {
         videoElement.src = `${imageFolder}/${index}.mp4`;
         videoElement.controls = true;
         videoElement.autoplay = true;
+        videoElement.preload = 'metadata'; // Don't prefetch the whole clip until it plays
         videoElement.style.maxWidth = '100%';
         videoElement.style.maxHeight = '90vh';
         videoElement.style.objectFit = 'contain';
@@ -113,8 +130,11 @@ function openLightbox(index, extension) {
     } else {
         // Handle image
         const imgElement = document.createElement('img');
-        imgElement.src = `${imageFolder}/${index}.${extension}`;
+        imgElement.src = USE_OPTIMIZED_ASSETS
+            ? `${imageFolder}/full/${index}.webp`
+            : `${imageFolder}/${index}.${extension}`;
         imgElement.alt = ''; // No alt text for lightbox images
+        imgElement.decoding = 'async';
         imgElement.style.maxWidth = '100%';
         imgElement.style.maxHeight = '90vh';
         imgElement.style.objectFit = 'contain';
@@ -141,6 +161,24 @@ function closeLightboxHandler() {
         videoElement.pause(); // Pause the video
         videoElement.currentTime = 0; // Reset playback to the start
     }
+}
+
+// Cache metadata responses so repeated lightbox opens don't refetch the same JSON.
+const metadataCache = new Map();
+function fetchMetadata(index) {
+    if (metadataCache.has(index)) {
+        return metadataCache.get(index);
+    }
+    const request = fetch(`metadata/${index}.json`).then((response) => {
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        return response.json();
+    });
+    metadataCache.set(index, request);
+    // Don't cache failures permanently — allow a retry on the next open.
+    request.catch(() => metadataCache.delete(index));
+    return request;
 }
 
 // Function to parse basic Markdown
